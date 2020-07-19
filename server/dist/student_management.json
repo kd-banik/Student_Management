@@ -1,0 +1,169 @@
+{
+    "openapi":"3.0.0",
+    "info":{
+        "description":"This student management system tool server",
+        "title":"Student Management System",
+        "version": "0.0.1",
+        "contact":{
+            "name":"Kushaldeep kansabanik",
+            "email":"kushaldeep.kansabanik@optimizeitsystems.com"
+        }
+    },
+    "servers":[{
+        "description":"Local development server",
+        "url":"http://127.0.0.1:{port}",
+        "variables":{
+            "port":{
+                "default":"5000"
+            }
+        }
+    }],
+    "paths":{
+        "/user/register":{
+            "post":{
+                "operationId":"registerUser",
+                "description":"Registration of students",
+                "requestBody":{
+                    "description":"Registration data for student",
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "f_name":{
+                                        "type":"string",
+                                        "example":"kushaldeep"
+                                    },
+                                    "l_name":{
+                                        "type":"string",
+                                        "example":"kansabanik"
+                                    },
+                                    "phno":{
+                                        "type":"string",
+                                        "example":"9061647820"
+                                    },
+                                    "email_id":{
+                                        "type":"string",
+                                        "example":"kushalbanik1994@gmail.com"
+                                    },
+                                    "address1":{
+                                        "type":"string",
+                                        "example":"Bl-2, sector 2, saltlake, kolkata , zip - 700091"
+                                    },
+                                    "address2":{
+                                        "type":"string",
+                                        "example":"Bl-2, sector 2, saltlake, kolkata , zip - 700091"
+                                    },
+                                    "password":{
+                                        "type":"string",
+                                        "example":"123456"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                "required": true
+                },
+                "responses":{
+                    "200":{
+                        "description":"Success",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "statusCode":{
+                                            "type":"integer",
+                                            "example":"200"
+                                        },
+                                        "description":{
+                                            "type":"string",
+                                            "example":"Success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default":{
+                        "description":"Undefined error"
+                    }
+                }
+            }
+        },
+        "/user/login":{
+            "post":{
+                "operationId":"loginUser",
+                "description":"Login authentication for user",
+                "requestBody":{
+                    "description":"Login data for user",
+                    "required":true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "user_id":{
+                                        "type":"string",
+                                        "example":"kushalbanik1994@gmail.com"
+                                    },
+                                    "password":{
+                                        "type":"string",
+                                        "example":"123456"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"Success",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "statusCode":{
+                                            "type":"integer",
+                                            "example":200
+                                        },
+                                        "description":{
+                                            "type":"string",
+                                            "example":"Success"
+                                        },
+                                        "user_data":{
+                                            "type":"object",
+                                            "example":"{student_id:1594942402,email_id:kushalbanik1994@gmail.com,f_name:kushaldeep,l_name:kansabanik}"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "405":{
+                        "description":"Method not allowed"
+                    }
+                }
+            }
+        },
+        "/blog/post":{
+            "post":{
+
+            }
+        },
+        "/blog/modify":{
+            "post":{
+
+            },
+            "delete":{
+
+            }
+        },
+        "/blog/get":{
+            "get":{
+
+            }
+        }
+    }
+}
