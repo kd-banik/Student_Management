@@ -1,0 +1,285 @@
+openapi: 3.0.0
+info:
+  description: This student management system tool server
+  title: Student Management System
+  version: 0.0.1
+  contact:
+    name: Kushaldeep kansabanik
+    email: kushaldeep.kansabanik@optimizeitsystems.com
+servers:
+  - description: Local development server
+    url: 'http://127.0.0.1:{port}'
+    variables:
+      port:
+        default: '5000'
+paths:
+  /user/register:
+    post:
+      operationId: registerUser
+      description: Registration of students
+      requestBody:
+        description: Registration data for student
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                f_name:
+                  type: string
+                  example: kushaldeep
+                l_name:
+                  type: string
+                  example: kansabanik
+                phno:
+                  type: string
+                  example: '9061647820'
+                email_id:
+                  type: string
+                  example: kushalbanik1994@gmail.com
+                address1:
+                  type: string
+                  example: 'Bl-2, sector 2, saltlake, kolkata , zip - 700091'
+                address2:
+                  type: string
+                  example: 'Bl-2, sector 2, saltlake, kolkata , zip - 700091'
+                password:
+                  type: string
+                  example: '123456'
+        required: true
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: '200'
+                  description:
+                    type: string
+                    example: Success
+        default:
+          description: Undefined error
+  /user/login:
+    post:
+      operationId: loginUser
+      description: Login authentication for user
+      requestBody:
+        description: Login data for user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  example: kushalbanik1994@gmail.com
+                password:
+                  type: string
+                  example: '123456'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  description:
+                    type: string
+                    example: Success
+                  user_data:
+                    type: object
+                    example: >-
+                      {student_id:1594942402,email_id:kushalbanik1994@gmail.com,f_name:kushaldeep,l_name:kansabanik}
+        '405':
+          description: Method not allowed
+  /blog/post:
+    post:
+      operationId: postBlog
+      description: Post any blog
+      requestBody:
+        description: blog data for user
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                blog_title:
+                  type: string
+                  example: Popular hacks all over the internet that are useless
+                blog_content:
+                  type: string
+                  example: >-
+                    If you are among those serious people who try to seek life
+                    hacks or beauty hacks because you want to save some money,
+                    let me tell you…You would be wasting your 1 hour of precious
+                    life.
+                student_id:
+                  type: integer
+                  example: '1594942402'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  description:
+                    type: string
+                    example: Success
+        '405':
+          description: Method not allowed
+  /blog/modify:
+    put:
+      operationId: blogModify
+      description: Modify existing users blog data
+      requestBody:
+        description: Modifying data for existing blog
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                blog_id:
+                  type: integer
+                  example: '1594982380'
+                blog_title:
+                  type: string
+                  example: Popular hacks all over the internet
+                blog_content:
+                  type: string
+                  example: >-
+                    you are among those serious people who try to seek life
+                    hacks or beauty hacks because you want to save some money,
+                    let me tell you…You would be wasting your 1 hour of precious
+                    life.
+                student_id:
+                  type: integer
+                  example: '1594942402'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: '200'
+                  description:
+                    type: string
+                    example: Success
+        '405':
+          description: Method Not Allowed
+    delete:
+      operationId: blogDelete
+      description: Delete a Blog of user
+      parameters:
+        - name: blogId
+          in: query
+          description: The Blog id to deleted
+          schema:
+            type: string
+        - name: studentId
+          in: query
+          description: The student id of the blog to be deleted
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: '200'
+                  description:
+                    type: string
+                    example: Success
+        '405':
+          description: Method not Allowed
+  /blog/get:
+    get:
+      operationId: getBlog
+      description: get all blogs
+      responses:
+        '200':
+          description: Success
+        '405':
+          description: Method not allowed
+  /blog/get/{blogId}:
+    get:
+      operationId: getBlogById
+      parameters:
+        - name: blogId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses: 
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  blog_id:
+                    type: integer
+                    example: 1594982699
+                  blog_title:
+                    type: string
+                    example: "some-title"
+                  blog_content:
+                    type: string
+                    example: "Some string body"
+                  student_id:
+                    type: integer
+                    example: 1594942402
+        '405':
+          description: "Method not allowed"
+  /user/index:
+    get:
+      operationId: userIndex
+      description: Route to user index page
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: string
+                example: "You are logged in"
+        '405':
+          description: Method Not Allowed
+  /user/logout:
+    get:
+      operationId: userLogout
+      description: Logging out from the current session
+      responses: 
+        '200':
+          description: Success
+          content:
+              text/html:
+                schema:
+                  type: string
+                  example: "Successfully Logged out"
+        '405':
+          description: Method not allowed

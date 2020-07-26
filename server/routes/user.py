@@ -1,22 +1,36 @@
-from flask import Blueprint, request, current_app, has_app_context
-from extension.extension import mysql
+from flask import Blueprint, request, make_response,redirect,url_for
+from extension.extension import mysql,session
 import json, hashlib, time
 from flask_cors import CORS
 user = Blueprint("user",__name__)
 CORS(user)
+@user.route("/index",methods = ['GET'])
+def index():
+    message = None
+    if('user_name' in session):
+        message = "You are logged in"
+    else:
+        message = "Please login first"
+    return message
+
 @user.route("/login",methods = ["POST"])
 def login():
     responseDict = {
             "statusCode" : "200",
-            "description": "Succcess login",
-            "appContext": None
+            "description": "Succcess login"
         }
+    if('email_id' in session and 'student_id' in session):
+        responseDict['statusCode'] = 200
+        responseDict['description'] = "You are already Logged in"
+        return responseDict
+
     if(request.is_json == False or request.method != "POST"):
         responseDict['statusCode'] = 404
         responseDict['description'] = "Bad request Format"
         return responseDict
     json_data = request.get_json()
     print("Request Data: ",json_data)
+    print("Request Cookies: ",request.cookies.get('user_id'))
     user_id = json_data['user_id'] if "user_id" in json_data else ""
     password = json_data['password'] if "password" in json_data else ""
     if(user_id == "" or password == ""):
@@ -28,6 +42,7 @@ def login():
     rows = 0
     sql = "SELECT student_id,email_id,first_name,last_name,password FROM students WHERE email_id = '"+user_id+"'"
     rowdata = ""
+    cookie_string = None
     try:
         cursor.execute(sql)
         rows = cursor.fetchall()
@@ -48,18 +63,26 @@ def login():
     else:
         responseDict['statusCode'] = 200
         responseDict['description'] = "SuccessFul"
-        responseDict['user_data'] = rowdata
-    return json.dumps(responseDict)
+        session['email_id'] = rowdata['email_id']
+        session['student_id'] = rowdata['student_id']
+        cookie_string = hashlib.md5(user_id.encode()).hexdigest()
+    response = make_response(json.dumps(responseDict))
+    response.set_cookie('user_id',cookie_string)
+    return response
 
 @user.route("/register",methods = ["POST"])
 def registration():
     responseDict = {
         "statusCode" : "200",
-        "description": "Success Registration",
-        "appContext": None
+        "description": "Success Registration"
     }
-    responseDict['appContext'] = has_app_context()
-    print("App context: ",responseDict['appContext'])
+    if('email_id' in session):
+        responseDict['statusCode'] = 200
+        responseDict['description'] = "You are already Logged in"
+        return responseDict
+    
+    # responseDict['appContext'] = has_app_context()
+    # print("App context: ",responseDict['appContext'])
     json_data = request.get_json()
     email_id = json_data['email_id']
     sql = "SELECT * FROM students WHERE email_id = '"+email_id+"'"
@@ -99,5 +122,15 @@ def registration():
         responseDict['description'] = str(e)
     finally:
         cursor.close()
-    
     return  responseDict
+
+@user.route("/logout",methods = ['GET'])
+def logout():
+    message = None
+    if('email_id' in session and 'student_id' in session):
+        session.pop('email_id',None)
+        session.pop('student_id',None)
+        message = "SuccessFully Logged out"
+    else:
+        message = "you are not logged in"
+    return redirect(url_for('index'))

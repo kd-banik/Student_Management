@@ -8,6 +8,7 @@ import json
 import time
 #from routes.user import user
 app = Flask(__name__)
+app.config['SECRET_KEY'] = "HelloWorld!"
 json_file = ""
 try:
     json_file = json.load(open("connection.json","r"))
@@ -29,6 +30,7 @@ app.register_blueprint(blog,url_prefix = "/blog")
 /blog/post
 /blog/modify
 /blog/get
+/blog/get/<int:id>
 """
 
 if(__name__ == "__main__"):

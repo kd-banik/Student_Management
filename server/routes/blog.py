@@ -1,5 +1,5 @@
-from flask import Blueprint, request
-from extension.extension import mysql
+from flask import Blueprint, request, url_for, redirect
+from extension.extension import mysql, session
 import json , time, hashlib
 from flask_cors import CORS
 blog = Blueprint("blog",__name__)
@@ -11,6 +11,9 @@ def submit_post():
         "statusCode" : 200,
         "description" : "Success"
     }
+    if('email_id' not in session and 'student_id' not in session):
+        return redirect(url_for('user.index'))
+    
     if(request.is_json == False or request.method != "POST"):
         responseDict = {
             "statusCode" : 404,
@@ -53,13 +56,21 @@ def modify_blog():
         "statusCode": 405,
         "description": "Unknown"}
     blog_data_modify = None
+    if('email' not in session and 'student_id' not in session):
+        return redirect(url_for('user.index'))
+    
     if(request.is_json):
         blog_data_modify = request.get_json()
     else:
         responseDict["statusCode"] = 404
         responseDict["description"] = "Bad Request Data"
         return responseDict
-    if(request.method == "PUT" and "blog_id" not in blog_data_modify and "blog_content" not in blog_data_modify and "student_id" not in blog_data_modify and "blog_title" not in blog_data_modify):
+
+    if(session['student_id'] != blog_data_modify['student_id']):
+        responseDict["statusCode"] = 406
+        responseDict["description"] = "access Violation"
+        return responseDict
+    elif(request.method == "PUT" and "blog_id" not in blog_data_modify and "blog_content" not in blog_data_modify and "student_id" not in blog_data_modify and "blog_title" not in blog_data_modify):
         responseDict["statusCode"] = 404
         responseDict["description"] = "Bad Request Data"
         return responseDict
@@ -116,6 +127,33 @@ def get_blog():
     new_rows = tuple((x,blog_data[0]) for x in range(0,len(blog_data)))
     print("new rows: ",new_rows)
     new_blog_rows = dict(new_rows)
-    # responseDict['statusCode'] = 200
-    # responseDict['description'] = "Success"
     return new_blog_rows
+
+@blog.route("/get/<int:id>",methods = ["GET"])
+def get_blog_by_id(id):
+    responseDict = {
+        "status": 404,
+        "description":"Error"
+    }
+    blog_id = id
+    sql = "SELECT * FROM student_blog_post WHERE blog_id = '{}'".format(blog_id)
+    result = None
+    sqlFlag = None
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute(sql)
+        result = cursor.fetchall()
+        mysql.connection.commit()
+    except Exception as e:
+        print("fetching blog by id sql error: ",e)
+        sqlFlag = True
+    finally:
+        cursor.close()
+    #print(result)
+    if(sqlFlag):
+        return json.dumps(responseDict)
+    elif(len(result)<=0):
+        responseDict = {"statusCode":"205","description":"Now blog found"}
+        return json.dumps(responseDict)
+    return json.dumps(result)
+    

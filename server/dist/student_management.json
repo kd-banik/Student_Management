@@ -149,20 +149,184 @@
         },
         "/blog/post":{
             "post":{
+                "operationId":"postBlog",
+                "description":"Post any blog",
+                "requestBody":{
+                    "description":"blog data for user",
+                    "required":true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "blog_title":{
+                                        "type":"string",
+                                        "example":"Popular hacks all over the internet that are useless"
+                                    },
+                                    "blog_content":{
+                                        "type":"string",
+                                        "example":"If you are among those serious people who try to seek life hacks or beauty hacks because you want to save some money, let me tell you…You would be wasting your 1 hour of precious life."
+                                    },
+                                    "student_id":{
+                                        "type":"integer",
+                                        "example":"1594942402"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"Success",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "statusCode":{
+                                            "type":"integer",
+                                            "example":200
+                                        },
+                                        "description":{
+                                            "type":"string",
+                                            "example":"Success"
+                                        }
+                                    }
 
+                                }
+                            }
+                        }
+                    },
+                    "405":{
+                        "description":"Method not allowed"
+                    }
+                }
             }
         },
         "/blog/modify":{
-            "post":{
-
+            "put":{
+                "operationId":"blogModify",
+                "description":"Modify existing users blog data",
+                "requestBody":{
+                    "description":"Modifying data for existing blog",
+                    "required":true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "blog_id":{
+                                        "type":"integer",
+                                        "example":"1594982380"
+                                    },
+                                    "blog_title":{
+                                        "type":"string",
+                                        "example":"Popular hacks all over the internet"
+                                    },
+                                    "blog_content":{
+                                        "type":"string",
+                                        "example":"you are among those serious people who try to seek life hacks or beauty hacks because you want to save some money, let me tell you…You would be wasting your 1 hour of precious life."
+                                    },
+                                    "student_id":{
+                                        "type":"integer",
+                                        "example":"1594942402"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses":{
+                    "200":{
+                        "description":"Success",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "statusCode":{
+                                            "type":"integer",
+                                            "example":"200"
+                                        },
+                                        "description":{
+                                            "type":"string",
+                                            "example":"Success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "405":{
+                        "description":"Method Not Allowed"
+                    }
+                }
             },
             "delete":{
-
+                "operationId":"blogDelete",
+                "description":"Delete a Blog of user",
+                "requestBody":{
+                    "description":"data for blog id and student id to delete data",
+                    "required":true,
+                    "content":{
+                        "application/json":{
+                            "schema":{
+                                "type":"object",
+                                "properties":{
+                                    "blog_id":{
+                                        "type":"integer",
+                                        "example":"1594982699"
+                                    },
+                                    "student_id":{
+                                        "type":"integer",
+                                        "example":"1594942402"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                },
+                "responses":{
+                    "200":{
+                        "description":"Success",
+                        "content":{
+                            "application/json":{
+                                "schema":{
+                                    "type":"object",
+                                    "properties":{
+                                        "statusCode":{
+                                            "type":"integer",
+                                            "example":"200"
+                                        },
+                                        "description":{
+                                            "type":"string",
+                                            "example":"Success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "405":{
+                        "description":"Method not Allowed"
+                    }
+                }
             }
         },
         "/blog/get":{
             "get":{
-
+                "operationId":"getBlog",
+                "description":"get all blogs",
+                "responses":{
+                    "200":{
+                        "description":"Success"
+                    },
+                    "405":{
+                        "description":"Method not allowed"
+                    }
+                }
             }
         }
     }
